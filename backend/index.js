@@ -8,14 +8,20 @@ import { mongoosedatabse } from "./config/db.js";
 import Note from "./models/Note.js";
 const app = express();
 const server = http.createServer(app);
+
 const io = new Server(server, {
   cors: {
     origin: [process.env.FRONTEND_URL1, process.env.FRONTEND_URL2],
+    methods: ["GET", "POST"],
+    credentials: true,
+    transports: ["websocket", "polling"],
   },
+  allowEIO3: true,
 });
 
 const corsOptions = {
   origin: [process.env.FRONTEND_URL1, process.env.FRONTEND_URL2],
+  credentials: true,
 };
 app.use(cors(corsOptions));
 app.use(express.json());
