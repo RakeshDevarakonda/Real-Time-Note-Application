@@ -39,7 +39,7 @@ export default function Home() {
 
     socket.emit("getnotesbysocket", (response) => {
       if (response.success) {
-        console.log(response.notes);
+        (response.notes);
         dispatch(setNotes(response?.notes));
       } else {
         fetchNotes();

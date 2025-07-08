@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { getRandomColor } from "../../utils/generatecolors";
-
+import DOMPurify from "dompurify";
 export default function NoteCard({ note }) {
   function formatTime(timestamp) {
     const date = new Date(timestamp);
@@ -14,8 +14,6 @@ export default function NoteCard({ note }) {
 
     return date.toLocaleTimeString(undefined, options);
   }
-
-
 
   return (
     <>
@@ -40,7 +38,9 @@ export default function NoteCard({ note }) {
                     return (
                       <div
                         key={index}
-                        className={`w-8 h-8 ${getRandomColor(user?.name.slice(0, 1))} rounded-full border-2 border-white 
+                        className={`w-8 h-8 ${getRandomColor(
+                          user?.name.slice(0, 1)
+                        )} rounded-full border-2 border-white 
         flex items-center justify-center text-sm text-black font-bold 
         shadow-md hover:scale-110 transition-transform duration-200`}
                         title={user?.name}
@@ -60,9 +60,12 @@ export default function NoteCard({ note }) {
           </div>
 
           {/* Content */}
-          <p className="text-gray-600 text-base mb-6 leading-relaxed">
-            {note?.content}
-          </p>
+          <p
+            className="text-gray-600 text-base mb-6 leading-relaxed"
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(note?.content.slice(0, 20)),
+            }}
+          ></p>
 
           {/* Footer */}
           <div className="flex items-center justify-between text-sm">
@@ -72,8 +75,6 @@ export default function NoteCard({ note }) {
           </div>
         </div>
 
-        {/* Hover Effect Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-3xl"></div>
       </Link>
     </>
   );

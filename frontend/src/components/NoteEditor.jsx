@@ -6,6 +6,9 @@ import Navbar from "./Navbar";
 import socket from "../socket";
 import { getRandomUser } from "../../utils/generateName";
 import { useDispatch, useSelector } from "react-redux";
+
+import JoditEditor from "jodit-react";
+
 import {
   noteSelector,
   setActiveUsers,
@@ -15,13 +18,15 @@ import {
 } from "../Redux/NoteAppRedux";
 import { getRandomColor } from "../../utils/generatecolors";
 import { useMemo } from "react";
+import { toast } from "react-toastify";
 
 export default function NoteEditor() {
+  const editor = useRef(null);
   const navigate = useNavigate();
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const { activeUsers, selectedNote, userDetail } = useSelector(noteSelector);
-  console.log(selectedNote);
+  selectedNote;
 
   const dispatch = useDispatch();
 
@@ -42,8 +47,6 @@ export default function NoteEditor() {
   useEffect(() => {
     if (!id || !userDetail) return;
 
-    console.log(id, userDetail);
-
     socket.emit("join_note", {
       noteId: id,
       userName: userDetail?.name,
@@ -55,11 +58,12 @@ export default function NoteEditor() {
     };
 
     const handleUserJoined = ({ userName }) => {
-      alert(`${userName} has joined the room.`);
+      console.log("User joined:", userName);
+      // toast(`${userName} has joined the room.`);
     };
 
     const handleUserLeft = ({ userName }) => {
-      alert(`${userName} has left the room.`);
+      // toast(`${userName} has left the room.`);
     };
 
     socket.on("active_users", handleActiveUsers);
@@ -72,13 +76,14 @@ export default function NoteEditor() {
       socket.off("user_left", handleUserLeft);
       socket.emit("leave_note", { noteId: id, userName: userDetail?.name });
     };
-  }, [id, userDetail]);
+  }, [id, userDetail?.name]);
 
   useEffect(() => {
     const fetchNote = async () => {
       try {
         const res = await axios.get(`${API_BASE_URL}/api/${id}`);
         dispatch(setSelectedNote(res.data));
+        console.log(res.data);
       } catch (err) {
         console.error("Failed to fetch note:", err);
       }
@@ -107,8 +112,7 @@ export default function NoteEditor() {
   }, [selectedNote]);
 
   const handleContentChange = (e) => {
-    const updatedContent = e.target.value;
-
+    const updatedContent = e;
     dispatch(updateNoteContent(updatedContent));
 
     if (socket.connected) {
@@ -119,6 +123,7 @@ export default function NoteEditor() {
         .catch((err) => console.error("API fallback failed:", err));
     }
   };
+
   useEffect(() => {
     const handleUpdateContent = (newContent) => {
       dispatch(updateNoteContent(newContent));
@@ -130,6 +135,59 @@ export default function NoteEditor() {
       socket.off("note_update", handleUpdateContent);
     };
   }, []);
+
+  const editorConfig = useMemo(
+    () => ({
+      readonly: false,
+      toolbarAdaptive: false,
+      height: 500,
+      width: "100%",
+      askBeforePasteHTML: false,
+      pastePlainText: true,
+      placeholder: "",
+
+      buttons: [
+        "bold",
+        "italic",
+        "underline",
+        "strikethrough",
+        "eraser",
+        "ul",
+        "ol",
+        "font",
+        "fontsize",
+        "paragraph",
+        "lineHeight",
+        "subscript",
+        "superscript",
+        "classSpan",
+        "image",
+        "video",
+        "file",
+        "speechRecognize",
+        "paste",
+        "selectall",
+        "table",
+        "hr",
+        "link",
+        "indent",
+        "outdent",
+        "left",
+        "center",
+        "right",
+        "justify",
+        "brush",
+        "copyformat",
+        "undo",
+        "redo",
+        "find",
+        "source",
+        "fullsize",
+        "preview",
+      ],
+    }),
+    [dispatch]
+  );
 
   return (
     <>
@@ -162,11 +220,22 @@ export default function NoteEditor() {
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
             <div className="lg:col-span-3">
               <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-                <textarea
+                {/* <textarea
                   value={selectedNote?.content}
                   onChange={handleContentChange}
                   className="w-full h-96 p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 resize-none font-mono text-sm leading-relaxed"
                   placeholder="Start typing your note here..."
+                /> */}
+
+                <JoditEditor
+                  ref={editor}
+                  value={selectedNote?.content}
+                  config={editorConfig}
+                  onChange={(newContent) => {
+                    handleContentChange(newContent);
+                  }}
+                  place
+                  className="w-full"
                 />
               </div>
             </div>
@@ -182,14 +251,15 @@ export default function NoteEditor() {
 
                 <div className="space-y-3">
                   {activeUsers?.map((user, index) => {
-             
                     return (
                       <div
                         key={user.socketId || index}
                         className="flex items-center space-x-3 bg-white/80 p-2 rounded-xl shadow-sm"
                       >
                         <div
-                          className={`w-8 h-8 ${getRandomColor(user?.userName.slice(0, 1))} rounded-full border-2 border-white flex items-center justify-center text-sm text-white font-bold shadow-md`}
+                          className={`w-8 h-8 ${getRandomColor(
+                            user?.userName.slice(0, 1)
+                          )} rounded-full border-2 border-white flex items-center justify-center text-sm text-white font-bold shadow-md`}
                           title={user.userName}
                         >
                           {user?.userName.slice(0, 1).toUpperCase()}
@@ -220,7 +290,9 @@ export default function NoteEditor() {
                       className="flex items-center space-x-3 bg-white/80 p-2 rounded-xl shadow-sm"
                     >
                       <div
-                        className={`w-8 h-8 ${getRandomColor(user?.name.slice(0, 1))} rounded-full border-2 border-white flex items-center justify-center text-sm  font-bold shadow-md`}
+                        className={`w-8 h-8 ${getRandomColor(
+                          user?.name.slice(0, 1)
+                        )} rounded-full border-2 border-white flex items-center justify-center text-sm  font-bold shadow-md`}
                         title={user?.name}
                       >
                         {user?.name.slice(0, 1).toUpperCase()}

@@ -28,7 +28,6 @@ export const colors = [
 ];
 
 export function getRandomColor(letter) {
-    console.log(letter)
   const found = colors.find(
     (obj) => Object.keys(obj)[0] === letter.toLowerCase() | "a"
   );
