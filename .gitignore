@@ -1,0 +1,15 @@
+node_modules
+
+*.env
+
+*logs.txt
+
+backend/logs.txt
+
+
+**/logs.txt
+
+logs.txt      
+*/logs.txt    
+
+frontend/dist/
