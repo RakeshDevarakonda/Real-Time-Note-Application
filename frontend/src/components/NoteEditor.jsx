@@ -13,12 +13,15 @@ import {
   setUserDetails,
   updateNoteContent,
 } from "../Redux/NoteAppRedux";
+import { getRandomColor } from "../../utils/generatecolors";
+import { useMemo } from "react";
 
 export default function NoteEditor() {
   const navigate = useNavigate();
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const { activeUsers, selectedNote, userDetail } = useSelector(noteSelector);
+  console.log(selectedNote);
 
   const dispatch = useDispatch();
 
@@ -111,7 +114,9 @@ export default function NoteEditor() {
     if (socket.connected) {
       socket.emit("note_update", { noteId: id, content: updatedContent });
     } else {
-      axios .put(`${API_BASE_URL}/api/${id}`, { content: updatedContent, }) .catch((err) => console.error("API fallback failed:", err));
+      axios
+        .put(`${API_BASE_URL}/api/${id}`, { content: updatedContent })
+        .catch((err) => console.error("API fallback failed:", err));
     }
   };
   useEffect(() => {
@@ -176,19 +181,52 @@ export default function NoteEditor() {
                 </h3>
 
                 <div className="space-y-3">
-                  {activeUsers?.map((user, index) => (
+                  {activeUsers?.map((user, index) => {
+             
+                    return (
+                      <div
+                        key={user.socketId || index}
+                        className="flex items-center space-x-3 bg-white/80 p-2 rounded-xl shadow-sm"
+                      >
+                        <div
+                          className={`w-8 h-8 ${getRandomColor(user?.userName.slice(0, 1))} rounded-full border-2 border-white flex items-center justify-center text-sm text-white font-bold shadow-md`}
+                          title={user.userName}
+                        >
+                          {user?.userName.slice(0, 1).toUpperCase()}
+                        </div>
+                        <span className="text-sm font-medium text-gray-700">
+                          {user.userName}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* {collabs} */}
+
+              <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
+                  <Users className="w-5 h-5" />
+                  <span>
+                    Collabarators ({selectedNote?.contributors?.length})
+                  </span>
+                </h3>
+
+                <div className="space-y-3">
+                  {selectedNote?.contributors.map((user, index) => (
                     <div
-                      key={user.socketId || index}
+                      key={index}
                       className="flex items-center space-x-3 bg-white/80 p-2 rounded-xl shadow-sm"
                     >
                       <div
-                        className={`w-8 h-8 ${user.color} rounded-full border-2 border-white flex items-center justify-center text-sm text-white font-bold shadow-md`}
-                        title={user.userName}
+                        className={`w-8 h-8 ${getRandomColor(user?.name.slice(0, 1))} rounded-full border-2 border-white flex items-center justify-center text-sm  font-bold shadow-md`}
+                        title={user?.name}
                       >
-                        {user.userName.slice(0, 1).toUpperCase()}
+                        {user?.name.slice(0, 1).toUpperCase()}
                       </div>
-                      <span className="text-sm font-medium text-gray-700">
-                        {user.userName}
+                      <span className="text-sm ml-2 font-medium text-gray-700">
+                        {user?.name}
                       </span>
                     </div>
                   ))}

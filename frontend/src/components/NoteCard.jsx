@@ -40,7 +40,7 @@ export default function NoteCard({ note }) {
                     return (
                       <div
                         key={index}
-                        className={`w-8 h-8 ${getRandomColor()} rounded-full border-2 border-white 
+                        className={`w-8 h-8 ${getRandomColor(user?.name.slice(0, 1))} rounded-full border-2 border-white 
         flex items-center justify-center text-sm text-black font-bold 
         shadow-md hover:scale-110 transition-transform duration-200`}
                         title={user?.name}

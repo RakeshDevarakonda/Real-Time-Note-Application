@@ -1,0 +1,13 @@
+## BACKEND DOTENV
+
+
+MONGODB_URL=mongodb://localhost:27017/notes || your connection string
+FRONTEND_URL1=http://localhost:5173
+FRONTEND_URL2=http://localhost:5174
+PORT=5000
+
+
+
+##FRONTEND DOTENV
+
+VITE_API_BASE_URL=http://localhost:5000 || your backennd url
