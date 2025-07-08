@@ -10,18 +10,18 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: [process.env.FRONTEND_URL1,process.env.FRONTEND_URL2],
+    origin: [process.env.FRONTEND_URL1, process.env.FRONTEND_URL2],
   },
 });
 
 const corsOptions = {
-  origin: [process.env.FRONTEND_URL1,process.env.FRONTEND_URL2],
+  origin: [process.env.FRONTEND_URL1, process.env.FRONTEND_URL2],
 };
 app.use(cors(corsOptions));
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("sssd");
+  res.redirect("https://real-time-note-application.vercel.app/");
 });
 app.use("/api", notesRoutes);
 

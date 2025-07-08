@@ -57,6 +57,8 @@ export default function Home() {
     } else {
       dispatch(setUserDetails(JSON.parse(storedUser)));
     }
+
+    dispatch(setSelectedNote(null))
   }, []);
 
   const handleCreateNote = async () => {
