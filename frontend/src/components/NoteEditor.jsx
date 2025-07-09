@@ -279,29 +279,37 @@ export default function NoteEditor() {
                 <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
                   <Users className="w-5 h-5" />
                   <span>
-                    Collabarators ({selectedNote?.contributors?.length})
+                    Collabarators (
+                    {
+                      selectedNote?.contributors?.filter((user) =>
+                        Boolean(user?.name)
+                      ).length
+                    }
+                    )
                   </span>
                 </h3>
 
                 <div className="space-y-3">
-                  {selectedNote?.contributors.map((user, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center space-x-3 bg-white/80 p-2 rounded-xl shadow-sm"
-                    >
+                  {selectedNote?.contributors
+                    .filter((user) => Boolean(user?.name))
+                    .map((user, index) => (
                       <div
-                        className={`w-8 h-8 ${getRandomColor(
-                          user?.name.slice(0, 1)
-                        )} rounded-full border-2 border-white flex items-center justify-center text-sm  font-bold shadow-md`}
-                        title={user?.name}
+                        key={index}
+                        className="flex items-center space-x-3 bg-white/80 p-2 rounded-xl shadow-sm"
                       >
-                        {user?.name.slice(0, 1).toUpperCase()}
+                        <div
+                          className={`w-8 h-8 ${getRandomColor(
+                            user.name.slice(0, 1)
+                          )} rounded-full border-2 border-white flex items-center justify-center text-sm font-bold shadow-md`}
+                          title={user.name}
+                        >
+                          {user.name.slice(0, 1).toUpperCase()}
+                        </div>
+                        <span className="text-sm font-medium text-gray-700">
+                          {user.name}
+                        </span>
                       </div>
-                      <span className="text-sm ml-2 font-medium text-gray-700">
-                        {user?.name}
-                      </span>
-                    </div>
-                  ))}
+                    ))}
                 </div>
               </div>
 

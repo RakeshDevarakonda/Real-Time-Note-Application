@@ -35,19 +35,25 @@ const noteSlice = createSlice({
         state.selectedNote.content = action.payload;
       }
     },
+    updateContributors: (state, action) => {
+      if (state.selectedNote) {
+        state.selectedNote.contributors = action.payload;
+      }
+    },
   },
 });
 
 export const noteReducer = noteSlice.reducer;
 
 export const {
+  updateContributors,
   setNewNoteTitle,
   setUserDetails,
   setSelectedNote,
   addNote,
   setNotes,
   setActiveUsers,
-  updateNoteContent
+  updateNoteContent,
 } = noteSlice.actions;
 
 export const noteSelector = (state) => state.noteReducer;

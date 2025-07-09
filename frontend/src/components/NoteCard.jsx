@@ -33,27 +33,38 @@ export default function NoteCard({ note }) {
             <div className="flex items-center space-x-3">
               <div className="flex -space-x-2">
                 <div className="flex -space-x-2">
-                  {note?.contributors.map((user, index) => {
-                    console.log(user?.color);
-                    return (
-                      <div
-                        key={index}
-                        className={`w-8 h-8 ${getRandomColor(
-                          user?.name.slice(0, 1)
-                        )} rounded-full border-2 border-white 
+                  {note?.contributors
+                    .filter((user) => Boolean(user?.name))
+                    .map((user, index) => {
+                      console.log(user?.color);
+                      return (
+                        <div
+                          key={index}
+                          className={`w-8 h-8 ${getRandomColor(
+                            user?.name.slice(0, 1)
+                          )} rounded-full border-2 border-white 
         flex items-center justify-center text-sm text-black font-bold 
         shadow-md hover:scale-110 transition-transform duration-200`}
-                        title={user?.name}
-                      >
-                        {user?.name.slice(0, 1).toUpperCase()}
-                      </div>
-                    );
-                  })}
+                          title={user?.name}
+                        >
+                          {user?.name.slice(0, 1).toUpperCase()}
+                        </div>
+                      );
+                    })}
                 </div>
               </div>
               {note?.contributors?.length > 0 && (
                 <span className="text-xs text-gray-500 font-medium bg-gray-100 px-2 py-1 rounded-full">
-                  {note?.contributors?.length} users
+                  {note?.contributors?.filter((user) => Boolean(user?.name))
+                    .length > 0 && (
+                    <>
+                      {
+                        note.contributors.filter((user) => Boolean(user?.name))
+                          .length
+                      }{" "}
+                      Contributed
+                    </>
+                  )}
                 </span>
               )}
             </div>
@@ -74,7 +85,6 @@ export default function NoteCard({ note }) {
             </span>
           </div>
         </div>
-
       </Link>
     </>
   );

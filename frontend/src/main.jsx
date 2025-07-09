@@ -8,9 +8,9 @@ import { ToastContainer, toast } from "react-toastify";
 
 createRoot(document.getElementById("root")).render(
   <Provider store={store}>
-    <StrictMode>
+    {/* <StrictMode> */}
       <App />
       <ToastContainer />
-    </StrictMode>
+    {/* </StrictMode> */}
   </Provider>
 );
