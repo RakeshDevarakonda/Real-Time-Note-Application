@@ -28,7 +28,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.redirect("https://real-time-note-application.vercel.app/");
+  res.redirect("https://real-time-note-application.onrender.com/");
 });
 app.use("/api", notesRoutes);
 

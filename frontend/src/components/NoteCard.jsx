@@ -62,7 +62,7 @@ export default function NoteCard({ note }) {
                         note.contributors.filter((user) => Boolean(user?.name))
                           .length
                       }{" "}
-                      Contributed
+                      user
                     </>
                   )}
                 </span>
