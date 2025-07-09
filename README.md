@@ -3,7 +3,13 @@
 A real-time note-taking web application where multiple users can collaboratively create and edit notes live. Built using React, Redux, Socket.IO, Node.js, MongoDB, and Tailwind CSS.
 
 ---
+### live url
 
+https://real-time-note-application.vercel.app/
+
+## Note
+
+Backend is deployed in render so it takes at least 1 min to load data for first time
 
 
 
